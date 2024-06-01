@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+
+</head>
+
+<style>
+    body {
+    display: flex;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #2e2e2e;
+    color: #ffffff;
+}
+
+.left-pane {
+    flex-basis: 80%;
+    border-right: 1px solid #444;
+    padding: 20px;
+    background-color: #3e3e3e;
+}
+
+.right-pane {
+    flex-basis: 20%;
+    padding: 20px;
+    background-color: #3e3e3e;
+}
+
+button {
+    background-color: #555;
+    border: none;
+    padding: 10px 20px;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #777;
+}
+
+#map {
+    height: 400px;
+}
+.input{
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    padding: 12px 19px;
+    border: 1px solid;
+    font-size: 15px;
+    border-radius: 20px;
+}
+.input_msg{
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    padding: 30px 19px;
+    border: 1px solid;
+    font-size: 15px;
+    border-radius: 20px;
+}
+.sub{
+    background-color: #ff5f2d;
+    color: white;
+    padding: 12px 17px;
+    border: none;
+    font-size: 15px;
+    border-radius: 20px;
+}
+.ref{
+    background-color: #8c7bff;
+    color: white;
+    padding: 12px 17px;
+    border: none;
+    font-size: 15px;
+    border-radius: 20px;
+}
+</style>
+
+<body>
+    <div class="left-pane" id="left-pane">
+        {% include "map.html" %}
+    </div>
+
+    <div class="right-pane">
+    <div id="myModal">
+            <form id="markForm">
+                <input class="input_msg" type="text" id="message" name="message" placeholder="message"><br><br>
+                <input class="input" type="number" id="group" name="group"><br><br>
+                <button type="submit" class="sub">Submit</button><br><br>
+            </form>
+    </div>
+
+    <form action="/" method="post">
+        <button id="refresh-button" class="ref">Refresh</button>
+    </form>
+</div>
+
+    <script>
+         $(document).ready(function() {
+            $('#refresh-button').click(function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '/',
+                    method: 'GET',
+                    success: function(data) {
+                        $('#left-pane').html(data);
+                        console.log('Map refreshed successfully!');
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        console.error('Error:', textStatus, errorThrown);
+                        alert('Failed to refresh map.');
+                    }
+                });
+            });
+        });
+
+
+
+        const modal = document.getElementById('myModal');
+        document.getElementById('markForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const message = document.getElementById('message').value;
+            const group = document.getElementById('group').value;
+
+            const data = {
+                longitude: 0,
+                latitude: 0,
+                message: message,
+                group: parseInt(group)
+            };
+
+            try {
+                const response = await fetch('/add_mark', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    const jsonResponse = await response.json();
+                    console.log('Success:', jsonResponse);
+                    alert('Mark added successfully!');
+                } else {
+                    console.error('Error:', response.statusText);
+                    alert('Failed to add mark.');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred.');
+            }
+        });
+    </script>
+
+</body>
+</html>

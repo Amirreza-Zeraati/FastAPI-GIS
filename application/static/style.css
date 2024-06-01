@@ -1,0 +1,70 @@
+body {
+    display: flex;
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #2e2e2e;
+    color: #ffffff;
+}
+
+.left-pane {
+    flex-basis: 80%;
+    border-right: 1px solid #444;
+    padding: 20px;
+    background-color: #3e3e3e;
+}
+
+.right-pane {
+    flex-basis: 20%;
+    padding: 20px;
+    background-color: #3e3e3e;
+}
+
+button {
+    background-color: #555;
+    border: none;
+    padding: 10px 20px;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #777;
+}
+
+#map {
+    height: 400px;
+}
+.input{
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    padding: 12px 19px;
+    border: 1px solid;
+    font-size: 15px;
+    border-radius: 20px;
+}
+.input_msg{
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    padding: 30px 19px;
+    border: 1px solid;
+    font-size: 15px;
+    border-radius: 20px;
+}
+.sub{
+    background-color: #ff5f2d;
+    color: white;
+    padding: 12px 17px;
+    border: none;
+    font-size: 15px;
+    border-radius: 20px;
+}
+.ref{
+    background-color: #8c7bff;
+    color: white;
+    padding: 12px 17px;
+    border: none;
+    font-size: 15px;
+    border-radius: 20px;
+}
+
