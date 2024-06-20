@@ -1,5 +1,6 @@
 comPort = 'COM7'
 colorsList = {
+        0: 'white',
         1: 'green',
         2: 'blue',
         3: 'red',
