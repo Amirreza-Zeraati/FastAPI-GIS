@@ -1,3 +1,4 @@
+import os
 import serial
 import folium
 import pynmea2
@@ -11,8 +12,9 @@ from db.models import GpsModel
 from sqlalchemy.orm import Session
 from db.db import SessionLocal, engine
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
-from fastapi import FastAPI, Request, Depends, BackgroundTasks
+from fastapi import FastAPI, Request, Depends, BackgroundTasks, status
 from config import comPort, colorsList, dbName, Center, zoom_start, max_bounds, min_zoom, min_lat, min_lon, max_lat, max_lon, savePath, layerPath
 
 
@@ -44,6 +46,9 @@ def read_gps_data(serial_port=comPort, baudrate=9600):
 def updateMap():
     colors = colorsList
 
+    if os.path.exists(savePath):
+        os.remove(savePath)
+
     connection = sqlite3.connect(dbName)
     cursor = connection.cursor()
     cursor.execute("SELECT * FROM locations")
@@ -68,7 +73,8 @@ def updateMap():
 
     for i in data:
         if i[1] is not None:
-            folium.Marker([i[1], i[2]], icon=folium.Icon(color=colors[i[4]])).add_to(m)
+            print('hi : ', i[1])
+            folium.Marker([i[2], i[1]], icon=folium.Icon(color=colors[i[4]])).add_to(m)
             
     folium.LayerControl().add_to(m)
     m.save(savePath)
@@ -87,6 +93,11 @@ def fetchLoc(id: int):
 @app.get("/")
 def test(request: Request):
     return templates.TemplateResponse('index.html', {'request': request})
+
+
+@app.post("/refresh")
+def redirect():
+    return RedirectResponse(url='/', status_code=status.HTTP_302_FOUND)
 
 
 @app.post("/add_mark")
